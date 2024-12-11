@@ -1,0 +1,24 @@
+trigger:
+    - main 
+    pool:
+      name: 'az400m03l03a-pool'
+    
+    steps: 
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '3.x'
+    
+    - script: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt 
+      displayName: 'Install Dependencies'
+    
+    
+    - script: |
+        pytest tests/
+      displayName: 'Run tests'
+    
+    - task: Cache@2
+      inputs: 
+        key: 'npm | "$(Agent.OS)" | package-lock.json'
+        path: $(Pipeline.Workspace)/.npm
